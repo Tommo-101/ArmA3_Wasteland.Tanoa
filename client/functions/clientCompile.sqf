@@ -38,6 +38,12 @@ fn_disableCollision = "client\functions\fn_disableCollision.sqf" call mf_compile
 fn_disableDriverAssist = "client\functions\fn_disableDriverAssist.sqf" call mf_compile;
 fn_emergencyEject = "client\functions\fn_emergencyEject.sqf" call mf_compile;
 fn_enableDriverAssist = "client\functions\fn_enableDriverAssist.sqf" call mf_compile;
+
+fn_driverAssistEngineOff = "client\functions\fn_driverAssistEngineOff.sqf" call mf_compile;
+fn_driverAssistEngineOn = "client\functions\fn_driverAssistEngineOn.sqf" call mf_compile;
+fn_driverAssistLightsOff = "client\functions\fn_driverAssistLightsOff.sqf" call mf_compile;
+fn_driverAssistLightsOn = "client\functions\fn_driverAssistLightsOn.sqf" call mf_compile;
+
 fn_encodeText = "client\functions\fn_encodeText.sqf" call mf_compile;
 fn_fitsInventory = "client\functions\fn_fitsInventory.sqf" call mf_compile;
 fn_forceSaveObject = "client\functions\fn_forceSaveObject.sqf" call mf_compile;
@@ -79,6 +85,7 @@ spawnRandom = "client\functions\spawnRandom.sqf" call mf_compile;
 // placeSpawnBeacon = "client\systems\playerMenu\placeSpawnBeacon.sqf" call mf_compile;
 // refuelVehicle = "client\systems\playerMenu\refuel.sqf" call mf_compile;
 // repairVehicle = "client\systems\playerMenu\repair.sqf" call mf_compile;
+spawnOnTerritory = "client\functions\spawnOnTerritory.sqf" call mf_compile;
 
 // Sync client with server time
 timeSync = "client\functions\clientTimeSync.sqf" call mf_compile;
@@ -90,26 +97,45 @@ updateTeamKiller = "client\functions\updateTeamKiller.sqf" call mf_compile;
 teamkillAction = "client\functions\doTeamKillAction.sqf" call mf_compile;
 teamkillMessage = "client\functions\showTeamKillMessage.sqf" call mf_compile;
 
+
 // Dialog compiles
 client_respawnDialog = "client\systems\playerMenu\dialog\loadRespawnDialog.sqf" call mf_compile;
 fn_checkStoreItemDLC = "client\functions\fn_checkStoreItemDLC.sqf" call mf_compile;
 fn_respawnTimer = "client\systems\scoreboard\fn_respawnTimer.sqf" call mf_compile;
 loadGeneralStore = "client\systems\generalStore\loadGenStore.sqf" call mf_compile;
+populateBaseStore = "client\systems\BasePartsStore\populateBaseStore.sqf" call mf_compile;
+
 loadGunStore = "client\systems\gunStore\loadGunStore.sqf" call mf_compile;
 loadScoreboard = "client\systems\scoreboard\loadScoreboard.sqf" call mf_compile;
+
 loadVehicleStore = "client\systems\vehicleStore\loadVehicleStore.sqf" call mf_compile;
+loadSpecStore = "client\systems\specStore\loadSpecStore.sqf" call mf_compile;
+loadAirStore = "client\systems\airStore\loadAirStore.sqf" call mf_compile;
+
 gearProperties = "client\functions\gearProperties.sqf" call mf_compile;
+
 getCapacity = "client\functions\getCapacity.sqf" call mf_compile;
 getItemInfo = "client\functions\getItemInfo.sqf" call mf_compile;
 getInventory = "client\systems\generalStore\getInventory.sqf" call mf_compile;
 getSellPriceList = "client\systems\selling\getSellPriceList.sqf" call mf_compile;
+
 populateGeneralStore = "client\systems\generalStore\populateGenStore.sqf" call mf_compile;
 populateGunStore = "client\systems\gunStore\populateGunStore.sqf" call mf_compile;
 populateVehicleStore = "client\systems\vehicleStore\populateVehicleStore.sqf" call mf_compile;
+populateSpecStore = "client\systems\specStore\populateSpecStore.sqf" call mf_compile;
+populateAirStore = "client\systems\airStore\populateAirStore.sqf" call mf_compile;
+
 repaintVehicle = "client\systems\vehicleStore\repaintVehicle.sqf" call mf_compile;
+repaintSpecVehicle = "client\systems\specStore\repaintSpecVehicle.sqf" call mf_compile;
+repaintAirVehicle = "client\systems\airStore\repaintAirVehicle.sqf" call mf_compile;
 requestStoreObject = "client\functions\requestStoreObject.sqf" call mf_compile;
+
 vehicleInfo = "client\systems\vehicleStore\vehicleInfo.sqf" call mf_compile;
+specInfo = "client\systems\specStore\specInfo.sqf" call mf_compile;
+airInfo = "client\systems\airStore\airInfo.sqf" call mf_compile;
 weaponInfo = "client\systems\gunStore\weaponInfo.sqf" call mf_compile;
+weaponFilter = "client\systems\gunStore\weaponFilter.sqf" call mf_compile;
+generalFilter = "client\systems\generalStore\generalFilter.sqf" call mf_compile;
 
 if (isNil "A3W_fnc_MP") then { A3W_fnc_MP = compile preprocessFileLineNumbers "\A3\functions_f\MP\fn_MP.sqf" };
 if (isNil "A3W_fnc_MPexec") then { A3W_fnc_MPexec = compile preprocessFileLineNumbers "\A3\functions_f\MP\fn_MPexec.sqf" };

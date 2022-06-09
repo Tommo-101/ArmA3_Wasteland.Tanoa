@@ -119,7 +119,7 @@ if (_variant != "") then { _variant = "variant_" + _variant };
 	{
 		_money = GET_ONE_TENTH_PRICE(_x select 2);
 	};
-} forEach call allVehStoreVehicles;
+} forEach (call allVehStoreVehicles + call allAirStoreVehicles + call specOpsStore);
 
 mutexScriptInProgress = true;
 

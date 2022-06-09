@@ -9,7 +9,10 @@ _markers =
 	["Legend:", "EmptyIcon", "ColorWhite", [1,1]],
 
 	["GS - General Store", "mil_dot", "ColorBlue", [1,1]],
-	["VS - Vehicle Store", "mil_dot", "ColorOrange", [1,1]]
+	["VS - Vehicle Store", "mil_dot", "ColorOrange", [1,1]],
+	["AS - Aircraft Store", "mil_dot", "ColorGreen", [1,1]],
+	["SO - SpecOps Store", "mil_dot", "ColorGrey", [1,1]],
+	["RS - Repair Station", "mil_dot", "ColorRed", [1,1]]
 ];
 
 

@@ -21,6 +21,8 @@ FAR_Player_Actions =
 			["<t color='#00FF00'>" + "Revive" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_revive"], 100, true, true, "", FAR_Check_Revive], // also defined in addons\UAV_Control\functions.sqf
 			["<t color='#00FF00'>" + "Stabilize" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_stabilize"], 99, true, true, "", FAR_Check_Stabilize],
 			["<t color='#FFFF00'>" + "Drag" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_drag"], 98, true, true, "", FAR_Check_Dragging],
+			["<t color='#FFFF00'>" + "Carry" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_carry"], 98, true, true, "", FAR_Check_Dragging],
+			["<t color='#00FF00'>" + "Transfer to Box" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_transfer_to_box"], 97, true, true, "", FAR_Check_Dead_Body],
 			["<t color='#FFFF00'>" + "Eject injured units from vehicle" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_eject"], 5.2, false, true, "", FAR_Check_Eject_Injured]
 		];
 	};
@@ -89,7 +91,7 @@ FAR_HandleTreating =
 				if (CAN_PERFORM) then
 				{
 					_failed = false;
-					_text = format [["Stabilizing %1%2 complete","Reviving %1%2 complete"] select _isRevive, floor (_progress * 100), "%"];
+					_text = format [["Stabilizing %3 %1%2 complete","Reviving %3 %1%2 complete"] select _isRevive, floor (_progress * 100), "%", name _target];
 				};
 
 				[_failed, _text];
@@ -241,6 +243,50 @@ FAR_Drag =
 
 	player forceWalk false;
 
+	{ [player, _x] call fn_removeManagedAction } forEach _actions;
+}
+call mf_compile;
+
+FAR_Carry =
+{
+
+	FAR_isDragging = true;
+
+	private ["_target", "_actions"];
+	_target = _this select 0;
+
+	player selectWeapon primaryWeapon player;
+	[player, "AcinPercMstpSrasWrflDnon"] call switchMoveGlobal;
+	_target attachto [player, [0.2, 0.2, 0]];
+	[_target, "ainjpfalmstpsnonwrfldnon_carried_still"] call switchMoveGlobal;
+
+	_target setVariable ["FAR_draggedBy", player, true];
+	_target setVariable ["FAR_isCarried", true, true];
+	player setVariable ["FAR_isDragging", _target];
+
+	_actions =
+	[
+		[player, ["<t color='#FFFF00'>" + "Load unit in vehicle" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_load"], 103, true, true, "", FAR_Check_Load_Dragged]] call fn_addManagedAction,
+		player addAction ["<t color='#FF0000'>" + "Release" + "</t>", "addons\FAR_revive\FAR_handleAction.sqf", ["action_release"], 102]
+	];
+
+	waitUntil {!alive player || UNCONSCIOUS(player) || !alive _target || !UNCONSCIOUS(_target) || !FAR_isDragging || !IS_CARRIED(_target)};
+
+	if (!isNull _target) then
+	{
+		if (!isNull attachedTo _target) then { detach _target };;
+		_target setVariable ["FAR_draggedBy", nil, true];
+		_target setVariable ["FAR_isCarried", false, true];
+	};
+
+	FAR_isDragging = false;
+	player setVariable ["FAR_isDragging", objNull];
+
+	if (vehicle player == player) then
+	{
+		private _wep = [player, true] call getMoveWeapon;
+		[player, format ["AmovPknlMstpS%1W%2Dnon", ["ras","non"] select (_wep == "non"), _wep]] call switchMoveGlobal;
+	};
 	{ [player, _x] call fn_removeManagedAction } forEach _actions;
 }
 call mf_compile;
@@ -464,7 +510,7 @@ FAR_Check_Load_Dragged =
 	_veh = cursorTarget;
 	_draggedUnit = player getVariable ["FAR_isDragging", objNull];
 
-	player distance _veh <= (sizeOf typeOf _veh / 3) max 2 && [_draggedUnit, _veh, true] call fn_canGetIn && [_draggedUnit, player] call A3W_fnc_isFriendly
+	player distance _veh <= (sizeOf typeOf _veh / 3) max 2 && [_draggedUnit, _veh, true] call fn_canGetIn
 }
 call mf_compile;
 
@@ -548,5 +594,97 @@ FAR_CheckFriendlies =
 	};
 
 	_medicsText joinString "<br/>"
+}
+call mf_compile;
+
+FAR_FindDeadbody =
+{
+	private _target = cursorTarget;
+	private _isSwim = false;
+	{
+		if ([_x, animationState HEALER] call fn_startsWith) exitWith
+		{
+			_isSwim = true;
+		};
+	} forEach ["abswp", "abdvp", "advep", "asdvp", "asswp", "aswmp"];
+	if (!_isSwim || alive _target || _target distance HEALER > 5 || !(["deadstate", animationState _target] call fn_startsWith) || surfaceIsWater (position _target)) then
+	{
+		_target = objNull;
+		private ["_unit", "_valid"];
+		{
+			_unit = _x;
+			_valid = true;
+			if (HEALER == player) then
+			{
+				_relDir = player getRelDir _unit;
+				if (_relDir > 180) then { _relDir = _relDir - 360 };
+				_valid = (abs _relDir <= 120); // medic must have target visible within a 240 horizontal FoV
+			};
+			if (_valid && _isSwim && (getPosATL _unit select 2) < 0.022 && surfaceIsWater (position _unit) && ["deadstate", animationState _unit] call fn_startsWith) exitWith 
+			{
+				_target = _unit;
+			};
+		} forEach nearestObjects [HEALER, ["Man"], 15];
+	};
+	_target
+}
+call mf_compile;
+
+FAR_Check_Dead_Body =
+{
+	private _target = call FAR_FindDeadbody;
+	(alive player && !FAR_isDragging && !isNull _target)
+}
+call mf_compile;
+
+FAR_Transfer_Box =
+{
+	private ["_target", "_box", "_headgear", "_goggles", "_binocular", "_hmd", "_assignedItems", "_uniform", "_vest", "_backpack" , "_ammo", "_items", "_weaponHolder", "_weaponsItems", "_deleteObjects"];
+	_target = _this select 0;
+
+	_headgear = headgear _target;
+	_goggles = goggles _target;
+	_binocular = binocular _target;
+	_hmd = hmd _target;
+	_assignedItems = assignedItems _target;
+	_uniform = uniform _target;
+	_vest = vest _target;
+	_backpack = backpack _target;
+	_ammo = magazinesAmmo _target;
+	_items = items _target;
+	_weaponHolder = nearestObjects [position _target, ["WeaponHolderSimulated"], 5];
+	_deleteObjects = _weaponHolder;
+	_deleteObjects pushBack _target;
+	{ deleteVehicle _x } forEach _deleteObjects;
+
+	_box = createVehicle ["Box_AAF_Equip_F", getPos _target, [], 0, "NONE"];
+	clearMagazineCargoGlobal _box;
+	clearWeaponCargoGlobal _box;
+	clearItemCargoGlobal _box;
+	if (_headgear != "") then { _box addItemCargoGlobal [_headgear, 1]; };
+	if (_goggles != "") then { _box addItemCargoGlobal [_goggles, 1]; };
+	if (_binocular != "") then { _box addItemCargoGlobal [_binocular, 1]; };
+	if (_hmd != "") then { _box addItemCargoGlobal [_hmd, 1]; };
+	if (_uniform != "") then { _box addItemCargoGlobal [_uniform, 1]; };
+	if (_vest != "") then { _box addItemCargoGlobal [_vest, 1]; };
+	if (_backpack != "") then { _box addBackpackCargoGlobal [_backpack, 1]; };
+	{
+  		_box addMagazineAmmoCargo [_x select 0, 1, _x select 1];
+	} forEach _ammo;
+	{
+  		_box addItemCargoGlobal [_x, 1];
+	} forEach _items;
+	{
+		_weaponsItems = weaponsItemsCargo _x;
+		{
+  			_box addWeaponWithAttachmentsCargo [_x, 1];
+		} forEach _weaponsItems;
+	} forEach _weaponHolder;
+	{
+		if !(_x in ["ItemMap","ItemCompass","ItemWatch","ItemRadio"]) then
+		{
+			_box addItemCargoGlobal [_x, 1];
+		};
+	} forEach _assignedItems;
 }
 call mf_compile;

@@ -15,6 +15,13 @@
 [_this, "camonet"] call mf_init;
 [_this, "warchest"] call mf_init;
 [_this, "cratemoney"] call mf_init;
+[_this, "drugs"] call mf_init;
+[_this, "cctv"] call mf_init;
+[_this, "vpin"] call mf_init;
+[_this, "quadbike"] call mf_init;
+[_this, "waterscooter"] call mf_init;
+[_this, "defibrillator"] call mf_init;
+[_this, "suicideVest"] call mf_init;
 
 if (["A3W_artilleryStrike"] call isConfigOn) then
 {

@@ -10,7 +10,7 @@ if (!unitIsUAV _uav) exitWith { grpNull };
 
 private _uavClass = typeOf _uav;
 private _vehCfg = configFile >> "CfgVehicles" >> _uavClass;
-private _crewCount = {round getNumber (_x >> "dontCreateAI") < 1 && 
+private _crewCount = {round getNumber (_x >> "dontCreateAI") < 1 &&
                       ((_x == _vehCfg && {round getNumber (_x >> "hasDriver") > 0}) ||
                        (_x != _vehCfg && {round getNumber (_x >> "hasGunner") > 0}))} count ([_uav, configNull] call BIS_fnc_getTurrets);
 
@@ -53,6 +53,13 @@ else
 if !(_uav isKindOf "StaticWeapon") then { _grp setCombatMode "BLUE" }; // hold fire to prevent auto-teamkill shenanigans
 (crew _uav) doWatch objNull; // stop aiming turret at player
 _uav addRating 1e11;
+
+_uav setVehicleReportRemoteTargets true;
+_uav setVehicleReceiveRemoteTargets true;
+_uav setVehicleReportOwnPosition true;
+_uav setVehicleRadar 1;
+((crew _uav) select 0) action ["ActiveSensorsOn", true];
+if ({_uav isKindOf _x} count ["Static_Designator_01_base_F", "Static_Designator_02_base_F"] != -1) then {((crew _uav) select 0) addWeapon "ItemMap";};
 
 _uav spawn
 {

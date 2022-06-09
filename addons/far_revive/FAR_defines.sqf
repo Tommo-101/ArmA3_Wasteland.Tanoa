@@ -34,6 +34,7 @@
 #define UNCONSCIOUS(UNIT) (UNIT getVariable ["FAR_isUnconscious", 0] == 1)
 #define STABILIZED(UNIT) (UNIT getVariable ["FAR_isStabilized", 0] == 1)
 #define DRAGGED_BY(UNIT) (UNIT getVariable ["FAR_draggedBy", objNull])
+#define IS_CARRIED(UNIT) (UNIT getVariable ["FAR_isCarried", false])
 #define DRAGGED(UNIT) (!isNull DRAGGED_BY(UNIT))
 #define TREATED_BY(UNIT) (UNIT getVariable ["FAR_treatedBy", objNull])
 #define BEING_TREATED(UNIT) (!isNull TREATED_BY(UNIT))
@@ -41,7 +42,6 @@
 #define IS_TREATING(UNIT) (!isNull TREATED_BY(UNIT))
 #define IS_MEDICAL_VEHICLE(VEH) (round getNumber (configfile >> "CfgVehicles" >> typeOf VEH >> "attendant") > 0)
 #define IS_MEDIC(UNIT) ((FAR_ReviveMode > 0 || {IS_MEDICAL_VEHICLE(UNIT)}) && (FAR_ReviveMode != 2 || {"Medikit" in items UNIT || {IS_MEDICAL_VEHICLE(UNIT) && unitIsUAV UNIT}}))
-
 #define HEALER ([player, cameraOn] select (cameraOn == getConnectedUAV player))
 #define ABDOMEN_ASL(UNIT) (AGLtoASL (UNIT modelToWorldVisual (UNIT selectionPosition "spine1")))
 #define FAR_Target_INVALID(TARGET) (!alive TARGET || (!isPlayer TARGET && !FAR_Debugging) || TARGET distance HEALER > FAR_Max_Distance || !UNCONSCIOUS(TARGET) || BEING_TREATED(TARGET) || DRAGGED(TARGET) || \

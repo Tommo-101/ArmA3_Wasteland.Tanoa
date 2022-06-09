@@ -8,5 +8,8 @@
 diag_log format["Message %1",messageSystem];
 
 _hint = messageSystem;
+
 if (_hint isEqualType "") then { _hint = parseText _hint };
 hint _hint;
+
+//[_hint,[0, safeZoneY, 1, 1],[10,10],4,1,0] spawn BIS_fnc_textTiles;

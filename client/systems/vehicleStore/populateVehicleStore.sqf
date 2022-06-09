@@ -27,11 +27,14 @@ _vehlist lbSetCurSel -1;
 _vehArray = switch (_switch) do
 {
 	case 0: { call landArray };
-	case 1: { call armoredArray };
-	case 2: { call tanksArray };
-	case 3: { call helicoptersArray };
-	case 4: { call planesArray };
+	case 1: { call lightInfArray };
+	case 2: { call armoredArray };
+	case 3: { call antiArray };
+	case 4: { call tanksArray };
+	//case 5: { call helicoptersArray };
+	//case 6: { call planesArray };
 	case 5: { call boatsArray };
+	case 6: { call utilityArray };
 	default { [] };
 };
 

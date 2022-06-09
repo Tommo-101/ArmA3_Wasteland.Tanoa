@@ -20,7 +20,7 @@ private _itemMod = _mods select 0;
 if (_itemMod isEqualTo "") exitWith {};
 
 private _cfgMod = configFile >> "CfgMods" >> _itemMod;
-if (!isClass (_cfgMod >> "Assets")) exitWith {}; // no DLC-only items
+//if (!isClass (_cfgMod >> "Assets")) exitWith {};
 
 _listbox lbSetPictureRight [_lbIndex, getText (_cfgMod >> "logo")];
 _listbox lbSetTooltip [_lbIndex, getText (_cfgMod >> "name")];

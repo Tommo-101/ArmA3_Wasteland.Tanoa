@@ -19,14 +19,20 @@ if ([_uid, 3] call isAdmin) then {
 	_adminSelect = _displayAdmin displayCtrl adminMenu_option;
 
 	_panelOptions = ["Player Management",
-					"Vehicle Management",
-					"Map Markers Log",
-					"Group Leader Markers",
-					"Teleport",
-	                "Money",
-	                "Debug Menu",
-					"Object Search",
-	                "Toggle God-mode"
+							"Vehicle Management",
+							"Map Markers Log",
+							"Unstuck player",
+							"Group Leader Markers",
+							"Teleport me to player",
+							"Teleport player to me",
+							"Unit Markers",
+							"Teleport",
+							"Money",
+							"Debug Menu",
+							"Object Search",
+							"Toggle God-mode",
+							"Vehicle Invincible",
+							"Infinity Ammo"
 	];
 
 	{

@@ -74,6 +74,9 @@ _player call playerSetup;
 
 call playerSpawn;
 
+pvar_logPlayerAction = [getPlayerUID _player, name _player, side _player, "Player Respawned", netId _player, "true", position _player, typeOf _player, ""];
+publicVariableServer "pvar_logPlayerAction";
+
 if !(pvar_PlayerTeamKiller isEqualTo []) then
 {
 	pDialogTeamkiller = pvar_PlayerTeamKiller;
@@ -81,3 +84,5 @@ if !(pvar_PlayerTeamKiller isEqualTo []) then
 
 	[] execVM "client\functions\createTeamKillDialog.sqf";
 };
+
+player setVariable ["loadOutPurchased",false];

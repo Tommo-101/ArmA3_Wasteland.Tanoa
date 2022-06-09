@@ -24,11 +24,12 @@ switch (toLower _type) do
 		params ["", "", ["_moneyObj",objNull,["",objNull]]];
 
 		if (_moneyObj isEqualType "") then { _moneyObj = objectFromNetId _moneyObj };
-
-		if (alive _player && _moneyObj isKindOf "Land_Money_F" && _moneyObj getVariable ["owner","world"] == "world") then
+		_oldOwner = _moneyObj getVariable ["owner", "unknownOwner"];
+		_result = (_moneyObj getVariable ["cmoney", 0]) max 0;
+		[getPlayerUID _player, name _player, side _player, "Pickup Money", netId _moneyObj, _result, position _player, format ["%1's Money", _oldOwner], format ["Currently Cash %1", _player getVariable ["cmoney", 0]]] call fn_logPlayerAction;
+		if (alive _player && _moneyObj isKindOf "Land_Money_F" && _moneyObj getVariable ["owner",""] != "mission") then
 		{
 			_moneyObj setVariable ["owner", getPlayerUID _player];
-			_result = (_moneyObj getVariable ["cmoney", 0]) max 0;
 			deleteVehicle _moneyObj;
 		};
 
@@ -49,7 +50,7 @@ switch (toLower _type) do
 
 			_result = _amount;
 		};
-
+		[getPlayerUID _player, name _player, side _player, "Drop Money", netId _moneyObj, _result, position _moneyObj, "Player Money", format ["Currently Cash %1", _player getVariable ["cmoney", 0]]] call fn_logPlayerAction;
 		[_player, -_result] call A3W_fnc_setCMoney; // always resync cmoney regardless of transaction status
 		_event = [_type, _result];
 	};
@@ -86,6 +87,13 @@ switch (toLower _type) do
 
 			_result = _amount;
 		};
+		if (_result > 0) then
+		{
+			[getPlayerUID _player, name _player, side _player, "Warchest Deposit", "", _result, position _player, "Warchest Money Balance", str (_balance + _result)] call fn_logPlayerAction;
+		} else
+		{
+			[getPlayerUID _player, name _player, side _player, "Warchest Withdrawal", "", _result, position _player, "Warchest Money Balance", str (_balance + _result)] call fn_logPlayerAction;
+		};
 
 		[_player, -_result] call A3W_fnc_setCMoney; // always resync cmoney regardless of transaction status
 		_event = ["transaction", _result];
@@ -113,6 +121,13 @@ switch (toLower _type) do
 			};
 
 			_result = _amount;
+		};
+		if (_amount > 0) then
+		{
+			[getPlayerUId _player, name _player, side _player, "Crate Deposit", netId _crate, _amount, position _crate, "Crate Money Balance", str (_crate getVariable ["cmoney", 0])] call fn_logPlayerAction;
+		} else
+		{
+			[getPlayerUID _player, name _player, side _player, "Crate Withdrawal", netId _crate, _amount, position _crate, "Crate Money Balance", str (_crate getVariable ["cmoney", 0])] call fn_logPlayerAction;
 		};
 
 		[_player, -_result] call A3W_fnc_setCMoney; // always resync cmoney regardless of transaction status
@@ -143,6 +158,13 @@ switch (toLower _type) do
 			};
 
 			_result = _amount;
+		};
+		if (_result > 0) then
+		{
+			[getPlayerUID _player, name _player, side _player, "ATM Deposit", "", _result, position _player, "Bank Balance", str _newBalance] call fn_logPlayerAction;
+		} else
+		{
+			[getPlayerUID _player, name _player, side _player, "ATM Withdrawal", "", _result, position _player, "Bank Balance", str _newBalance] call fn_logPlayerAction;
 		};
 
 		[_player, -_result] call A3W_fnc_setCMoney; // always resync cmoney regardless of transaction status
@@ -189,6 +211,7 @@ switch (toLower _type) do
 			{
 				[name _sender, _senderUID, side group _sender, name _recipient, _recipientUID, side group _recipient, _amount, _feeAmount] call fn_logBankTransfer;
 			};
+			[_senderUID, name _sender, side group _sender, "ATM Transfer", _recipientUID, _amount, position _player, "Bank Balance", str _sBalance] call fn_logPlayerAction;
 		};
 
 		// Reset client-side player balance to previous value if transfer failed

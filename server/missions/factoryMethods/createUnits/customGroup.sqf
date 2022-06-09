@@ -71,7 +71,7 @@ for "_i" from 1 to _nbUnits do
 			_unit addBackpack "B_Kitbag_mcamo";
 			_unit addWeapon "arifle_TRG20_F";
 			_unit addMagazine "RPG32_F";
-			_unit addWeapon "launch_RPG32_ghex_F";
+			_unit addWeapon "launch_RPG32_F";
 			_unit addMagazine "RPG32_F";
 			_unit addMagazine "RPG32_F";
 		};
@@ -102,4 +102,5 @@ for "_i" from 1 to _nbUnits do
 	_unit addEventHandler ["Killed", server_playerDied];
 };
 
+//[_pos] call addDefensiveMines;
 [_group, _pos] call defendArea;

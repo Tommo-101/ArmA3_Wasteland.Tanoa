@@ -32,6 +32,26 @@ if (isServer) then
 		};
 
 		diag_log format ["HandleDisconnect - %1 - alive: %2 - local: %3 - isPlayer: %4 - group: %5", [_name, _uid], alive _unit, local _unit, isPlayer _unit, group _unit];
+		//aj - text disconnect to lobby
+		(format ["Player %1 went to lobby", _name]) remoteExecCall ["systemChat", 0];
+
+		_bountyMarker = format ["%1_bountyMarker", _name];
+		if (markerType _bountyMarker == "mil_dot") then
+		{
+			deleteMarker _bountyMarker;
+
+			[
+				parseText format
+				[
+					"<t color='#ff0000' size='1.2' align='center'>[SERVER MESSAGE]</t><br />" +
+					"<t color='#FFFFFF'>------------------------------</t><br/>" +
+					"<t color='#FFFFFF' size='1.0'>player %1 disconnected while being high value target!</t>",
+					_name
+				]
+			] call hintBroadcast;
+
+			diag_log format ["Possible Combat logger: %1 disconnected while being %2!", _name, _bountyMarker];
+		};
 
 		_veh = objectParent _unit;
 
@@ -148,6 +168,7 @@ if (isServer) then
 		"A3W_antiHackMinRecoil",
 		"A3W_spawnBeaconCooldown",
 		"A3W_spawnBeaconSpawnHeight",
+		"A3W_maxSpawnBeacons",
 		"A3W_vehicleSaving",
 		"A3W_staticWeaponSaving",
 		"A3W_missionFarAiDrawLines",
@@ -183,7 +204,19 @@ if (isServer) then
 		"A3W_artilleryAmmo",
 		"A3W_territoryWarningIcons",
 		"A3W_disableBuiltInThermal",
-		"A3W_headshotNoRevive"
+		"A3W_headshotNoRevive",
+		"A3W_bountyMax",
+		"A3W_bountyMinStart",
+		"A3W_bountyRewardPerc",
+		"A3W_bountyLifetime",
+		"APOC_coolDownTimer",
+		"BoS_coolDownTimer",
+		"Safe_coolDownTimer",
+		"Sell_Price",
+		"License_Price",
+		"Service_Price",
+		"Vehicle_Distance",
+		"A3W_supportersEnabled"
 	];
 
 	addMissionEventHandler ["PlayerConnected", fn_onPlayerConnected];
@@ -198,11 +231,13 @@ _staticWeaponSavingOn = ["A3W_staticWeaponSaving"] call isConfigOn;
 _warchestSavingOn = ["A3W_warchestSaving"] call isConfigOn;
 _warchestMoneySavingOn = ["A3W_warchestMoneySaving"] call isConfigOn;
 _beaconSavingOn = ["A3W_spawnBeaconSaving"] call isConfigOn;
+_camonetSavingOn = ["A3W_camoNetSaving"] call isConfigOn;
 _timeSavingOn = ["A3W_timeSaving"] call isConfigOn;
 _weatherSavingOn = ["A3W_weatherSaving"] call isConfigOn;
 _mineSavingOn = ["A3W_mineSaving"] call isConfigOn;
+_cameraSavingOn = ["A3W_cctvCameraSaving"] call isConfigOn;
 
-_objectSavingOn = (_baseSavingOn || _boxSavingOn || _staticWeaponSavingOn || _warchestSavingOn || _warchestMoneySavingOn || _beaconSavingOn);
+_objectSavingOn = (_baseSavingOn || _boxSavingOn || _staticWeaponSavingOn || _cameraSavingOn || _warchestSavingOn || _warchestMoneySavingOn || _beaconSavingOn || _camonetSavingOn);
 _vehicleSavingOn = ["A3W_vehicleSaving"] call isConfigOn;
 _hcObjSavingOn = ["A3W_hcObjSaving"] call isConfigOn;
 
@@ -431,9 +466,11 @@ if (_playerSavingOn || _objectSavingOn || _vehicleSavingOn || _mineSavingOn || _
 			["vehicleSaving", _vehicleSavingOn],
 			["boxSaving", _boxSavingOn],
 			["staticWeaponSaving", _staticWeaponSavingOn],
+			["cctvCameraSaving", _cameraSavingOn],
 			["warchestSaving", _warchestSavingOn],
 			["warchestMoneySaving", _warchestMoneySavingOn],
 			["spawnBeaconSaving", _beaconSavingOn],
+			["camoNetSaving", _camonetSavingOn],
 			["timeSaving", _timeSavingOn],
 			["weatherSaving", _weatherSavingOn],
 			["hcObjSaving", _hcObjSavingOn]
@@ -540,7 +577,7 @@ else
 {
 	_storeGroup = createGroup sideLogic;
 	{
-		if (!isPlayer _x && {(toLower ((vehicleVarName _x) select [0,8])) in ["genstore","gunstore","vehstore"]}) then
+		if (!isPlayer _x && {(toLower ((vehicleVarName _x) select [0,8])) in ["genstore","gunstore","vehstore","airstore","specstore"]}) then
 		{
 			[_x] joinSilent _storeGroup;
 		};

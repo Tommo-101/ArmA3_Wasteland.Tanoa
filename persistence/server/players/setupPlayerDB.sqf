@@ -16,6 +16,7 @@ fn_updateStats = [_playerFuncs, "updateStats.sqf"] call mf_compile;
 fn_logAntihack = [_playerFuncs, "logAntihack.sqf"] call mf_compile;
 fn_logAdminMenu = [_playerFuncs, "logAdminMenu.sqf"] call mf_compile;
 fn_logBankTransfer = [_playerFuncs, "logBankTransfer.sqf"] call mf_compile;
+fn_logPlayerAction = [_playerFuncs, "logPlayerAction.sqf"] call mf_compile;
 fn_kickPlayerIfFlagged = "persistence\server\players\fn_kickPlayerIfFlagged.sqf" call mf_compile;
 
 A3W_fnc_checkPlayerFlag =
@@ -93,6 +94,8 @@ A3W_fnc_requestPlayerData =
 					case "BountyKills":  { _player setVariable ["bountyKills", _val, true] };
 				};
 			} forEach _data;
+
+			[_player] call bountyKillsExpired;
 
 			diag_log format ["pvar_requestPlayerData: %1", [owner _player, _player]];
 		}] execFSM "call.fsm";

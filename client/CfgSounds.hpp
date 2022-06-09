@@ -10,3 +10,10 @@ class MissileAlarm
 	sound[] = {"client\sounds\alarm_locked_by_missile_4x15.ogg", 0.25, 1};
 	titles[] = {0,""};
 };
+
+class spark4
+{
+  name = "spark4";
+  sound[] = {"client\sounds\spark4.ogg", db+5, 1};
+  titles[] = {0,""};
+};

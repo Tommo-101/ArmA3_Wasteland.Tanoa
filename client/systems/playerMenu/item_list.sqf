@@ -18,5 +18,6 @@ lbClear _itemlist;
 	if (_x select INDEX_QUANTITY > 0) then {
 		_idx = _itemlist lbAdd format["%1 x %2", _x select INDEX_QUANTITY, _x select INDEX_NAME];
 		_itemlist lbSetData [_idx, _x select INDEX_ID];
+		_itemlist lbSetPicture [_idx, _x select 5];
 	}
 } forEach call mf_inventory_all;

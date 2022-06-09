@@ -16,6 +16,8 @@ _class = typeOf _obj;
    !isNil {_obj getVariable "A3W_objectID"} && _savingMethod == "extDB"}) &&
   {(_baseSavingOn && {_class call _isSaveable}) ||
    (_boxSavingOn && {_class call _isBox}) ||
-   (_staticWeaponSavingOn && {_class call _isStaticWeapon})}) ||
+   (_staticWeaponSavingOn && {_class call _isStaticWeapon}) ||
+   (_cameraSavingOn && {_obj call _isCamera})}) ||
 {_warchestSavingOn && {_obj call _isWarchest}} ||
-{_beaconSavingOn && {_obj call _isBeacon}}})
+{_beaconSavingOn && {_obj call _isBeacon}} ||
+{_camonetSavingOn && {_obj call _isCamonet}}})

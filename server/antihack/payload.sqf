@@ -39,7 +39,11 @@ for "_i" from 0 to (count _cfgPatches - 1) do
 			"mcc_sandbox", // MCC keys
 			"agm_core", // AGM Options
 			"ace_optionsmenu", // ACE Options
-			"alive_ui" // ALiVE
+			"alive_ui", // ALiVE
+			"rhs_menuOptions",
+			"rhs_fnc_menuOptions",
+			"RHS_Options_Menu",
+			"rhs_"
 		])
 		then { _escCheck = false };
 	};
@@ -51,7 +55,7 @@ if (isNil "_cheatFlag" && _escCheck) then
 		for "_i" from 0 to (count _x - 1) do
 		{
 			_ctrlCfg = _x select _i;
-			if (getText (_ctrlCfg >> "action") != "" || getText (_ctrlCfg >> "onButtonClick") != "") exitWith
+			if (getText (_ctrlCfg >> "action") != "" || getText (_ctrlCfg >> "onButtonClick") != "" || getText ((_ctrlCfg >> "text") select [0, 64]) != "RHS - Game Options") exitWith
 			{
 				_cheatFlag = ["hack menu", format ["foreign Esc menu button '%1'", (getText (_ctrlCfg >> "text")) select [0, 64]]];
 			};

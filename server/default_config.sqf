@@ -13,6 +13,14 @@ A3W_disableGlobalVoice = 1;        // Auto-switch channel to Direct communicatio
 A3W_uavControl = "group";          // Restrict connection to UAVs based on ownership ("owner", "group", "side")
 A3W_disableUavFeed = 1;            // Force disable UAV PIP feed to prevent thermal camera abuse (0 = no, 1 = yes)
 A3W_disableBuiltInThermal = 1;     // Display a black screen if the player tries to use thermal vision built-in a handheld weapon like Titan launcher (0 = no, 1 = yes)
+A3W_cctvCameraSaving = 1;          // Save cctv cameras between restarts (0 = no, 1 = yes)
+A3W_supportersEnabled = 1;         // Enable/Disable Supporter Features
+
+// Timers
+APOC_coolDownTimer = 1800;         // APOC Air Drop Cool Down Timer
+BoS_coolDownTimer = 600;           // Baselocker hacking timer
+Safe_coolDownTimer = 600;          // Safe hacking timer
+A3W_teamSwitchLock = 180;          // Time in seconds before a player is locked into the team he is playing in (INDEPENDENT, BLUFOR, OPFOR)
 
 // Time settings
 A3W_startHour = 15;                // In-game hour at mission start (0 to 23) - time is saved and restored between server restarts if A3W_timeSaving = 1
@@ -48,7 +56,7 @@ A3W_antiHackMinRecoil = 1.0;       // Mininum recoil coefficient enforced by the
 A3W_showGunStoreStatus = 1;        // Show enemy and friendly presence at gunstores on map (0 = no, 1 = yes)
 A3W_gunStoreIntruderWarning = 1;   // Warn players in gunstore areas of enemy intruders (0 = no, 1 = yes)
 A3W_remoteBombStoreRadius = 70;    // Prevent players from placing any kind of explosive on the ground within this distance from any store (0 = disabled)
-A3W_poiObjLockDistance = 100;      // Prevent players from locking objects within this distance from points of interest (stores & mission spawns)
+A3W_poiObjLockDistance = 200;      // Prevent players from locking objects within this distance from points of interest (stores & mission spawns)
 A3W_vehiclePurchaseCooldown = 60;  // Number of seconds to wait before allowing someone to purchase another vehicle, don't bother setting it too high because it can be bypassed by rejoining
 
 // ATM settings
@@ -60,15 +68,20 @@ A3W_atmEditorPlacedOnly = 0;       // Only allow access via ATMs placed from the
 A3W_atmMapIcons = 1;               // Draw small icons on the map that indicate ATM locations (0 = no, 1 = yes)
 A3W_atmRemoveIfDisabled = 1;       // Remove all ATMs from map if A3W_atmEnabled is set to 0 (0 = no, 1 = yes)
 
+A3W_bountyMax = 250000;            // Maximum amount of money that can be set as a bounty on someone
+A3W_bountyMinStart = 5000;         // Minimum amount of money to start a bounty on someone
+A3W_bountyRewardPerc = 50;         // Percentage of cost that goes to bounty reward
+A3W_bountyLifetime = 3*24;         // Maximum lifetime in hours for bounty kills to store in DB (storing bounty kills is to prevent from forming groups with someone you collected bounty on)
+
 // Not currently implemented, soon
-A3W_atmBounties = 1;
+/*A3W_atmBounties = 1;
 A3W_bountyMax = 100000;
 A3W_bountyMin = 1000;
 A3W_bountyFee = 50;
-A3W_bountyKillsLifetime = 3*24;
+A3W_bountyKillsLifetime = 3*24;*/
 
 // Persistence settings
-A3W_savingMethod = "profile";      // Method used for saving data ("profile", "iniDB", "extDB")
+A3W_savingMethod = "extDB";      // Method used for saving data ("profile", "iniDB", "extDB")
 A3W_playerSaving = 1;              // Save player data like position, health, inventory, etc. (0 = no, 1 = yes)
 A3W_moneySaving = 1;               // If playerSaving = 1, save player money amount (0 = no, 1 = yes)
 A3W_playerStatsGlobal = 0;         // If playerSaving = 1 and savingMethod = "extDB", players' stats on the scoreboard will be their all-time global values from all servers of your database (0 = no, 1 = yes)
@@ -105,7 +118,7 @@ A3W_extDB_Environment = "normal";  // Value used to separate player & object dat
 A3W_extDB_playerSaveCrossMap = 0;  // Player saves are shared across maps in same environment, with player location saved separately for each map; death resets save on all maps (0 = no, 1 = yes)
 A3W_extDB_GhostingTimer = 5*60;    // Number of seconds a player has to wait when switching between servers running the same map (0 = disabled)
 A3W_extDB_GhostingAdmins = 0;      // Apply ghosting restriction to server admins (0 = no, 1 = yes)
-A3W_extDB_SaveUnlockedObjects = 1; // Save and restore unlocked baseparts that were purchased or locked at least once during their lifetime (0 = no, 1 = yes)
+A3W_extDB_SaveUnlockedObjects = 0; // Save and restore unlocked baseparts that were purchased or locked at least once during their lifetime (0 = no, 1 = yes)
 A3W_extDB_ConfigName = "A3W";      // Name of the connection config from @extDB3\extdb3-conf.ini to be used (the one within [brackets])
 A3W_extDB_IniName = "a3wasteland.ini"; // Name of the INI file in @extDB3\sql_custom to be used
 A3W_extDB_Misc = 0;                // Enable extDB Misc Protocol (0 = no, 1 = yes) - no associated features implemented in vanilla A3W
@@ -137,6 +150,8 @@ A3W_boxSpawning = 0;               // If serverSpawning = 1, spawn weapon crates
 A3W_baseBuilding = 1;              // If serverSpawning = 1, spawn base parts in towns (0 = no, 1 = yes)
 A3W_essentialsSpawning = 1;        // If serverSpawning = 1, spawn essential items (food sacks, water barrels, minor supply crates) in towns (0 = no, 1 = yes)
 
+A3W_territorySpawnCooldown = 5*60;
+
 // Loot settings
 A3W_buildingLootWeapons = 0;       // Spawn weapon loot in all buildings (0 = no, 1 = yes)
 A3W_buildingLootSupplies = 0;      // Spawn supply loot (backpacks & player items) in all buildings (0 = no, 1 = yes)
@@ -154,7 +169,7 @@ A3W_payrollAmount = 100;           // Amount of money rewarded per territory on 
 A3W_serverMissions = 1;            // Enable server missions (0 = no, 1 = yes)
 A3W_missionsDifficulty = 0;        // Missions difficulty (0 = normal, 1 = hard)
 A3W_missionFarAiDrawLines = 1;     // Draw small red lines on the map from mission markers to individual units & vehicles which are further away than 75m from the objective (0 = no, 1 = yes)
-A3W_missionsQuantity = 6;          // Number of missions running at the same time (0 to 6)
+A3W_missionsQuantity = 9;          // Number of missions running at the same time (0 to 6)
 A3W_heliPatrolMissions = 1;        // Enable missions involving flying helicopters piloted by AI (0 = no, 1 = yes)
 A3W_underWaterMissions = 1;        // Enable underwater missions which require diving gear (0 = no, 1 = yes)
 A3W_mainMissionDelay = 10*60;      // Time in seconds between Main Missions
@@ -163,3 +178,20 @@ A3W_sideMissionDelay = 5*60;       // Time in seconds between Side Missions
 A3W_sideMissionTimeout = 45*60;    // Time in seconds that a Side Mission will run for, unless completed
 A3W_moneyMissionDelay = 15*60;     // Time in seconds between Money Missions
 A3W_moneyMissionTimeout = 60*60;   // Time in seconds that a Money Mission will run for, unless completed
+A3W_priorityMissionDelay = 30*60;
+A3W_priorityMissionTimeout = 60*60;
+A3W_logisticsMissionDelay = 10*60;
+A3W_logisticsMissionTimeout = 30*60;
+A3W_waterMissionDelay = 5*60;
+A3W_waterMissionTimeout = 25*60;
+A3W_airMissionDelay = 5*60;
+A3W_airMissionTimeout = 25*60;
+
+
+//Mission Reward Money Amounts
+Tier_0_Reward = 0;						//added to eliminate the need to comment out when wantign to cancel $ reward from missions
+Tier_1_Reward = 50000;				//Default $5,000
+Tier_2_Reward = 75000;				//Default $10,000
+Tier_3_Reward = 100000;				//Default $15,000
+Tier_4_Reward = 150000;				//Default $25,000
+Tier_5_Reward = 200000;				//Default $40,000

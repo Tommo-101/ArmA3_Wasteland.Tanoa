@@ -95,42 +95,6 @@ class A3W_vehPaintMenu
 			h = VehPaint_ColorList_H;
 		};
 
-		/*#define VehPaint_DefParts_Tooltip "Some vehicles have optional or randomized parts.\nUnticking ""Default parts"" will disable randomization\nand let you choose parts below.\nAll parts affect vehicle weight."
-
-		class DefaultPartsChk: w_RscCheckBox
-		{
-			idc = vehshop_defparts_checkbox;
-			tooltip = VehPaint_DefParts_Tooltip;
-
-			#define VehPaint_DefPartsChk_W (0.03 * X_SCALE)
-			#define VehPaint_DefPartsChk_H (0.03 * Y_SCALE)
-			#define VehPaint_DefPartsChk_X (VehPaint_ColorList_X + VehPaint_ColorList_W + (0.02 * SZ_SCALE))
-			#define VehPaint_DefPartsChk_Y VehPaint_ColorList_Y
-
-			x = VehPaint_DefPartsChk_X;
-			y = VehPaint_DefPartsChk_Y;
-			w = VehPaint_DefPartsChk_W;
-			h = VehPaint_DefPartsChk_H;
-		};
-
-		class DefaultPartsLabel: w_RscText
-		{
-			idc = -1;
-			text = "Default parts";
-			sizeEx = 0.04 * TEXT_SCALE;
-			tooltip = VehPaint_DefParts_Tooltip;
-
-			#define VehPaint_DefPartsLabel_W (0.12 * X_SCALE)
-			#define VehPaint_DefPartsLabel_H (0.03 * Y_SCALE)
-			#define VehPaint_DefPartsLabel_X (VehPaint_DefPartsChk_X + VehPaint_DefPartsChk_W) //+ (0.001 * X_SCALE))
-			#define VehPaint_DefPartsLabel_Y ((VehPaint_DefPartsChk_Y + CENTER(VehPaint_DefPartsChk_H, VehPaint_DefPartsLabel_H)) - (0.0015 * Y_SCALE))
-
-			x = VehPaint_DefPartsLabel_X;
-			y = VehPaint_DefPartsLabel_Y;
-			w = VehPaint_DefPartsLabel_W;
-			h = VehPaint_DefPartsLabel_H;
-		};*/
-
 		class PartList: w_RscList
 		{
 			idc = vehshop_part_list;

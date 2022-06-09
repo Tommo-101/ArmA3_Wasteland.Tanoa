@@ -12,18 +12,24 @@ disableSerialization;
 
 vehicleStore_noBuzzard = false;
 
-private ["_vehshopDialog", "_Dialog", "_playerMoney", "_owner", "_landButton", "_armorButton", "_tankButton", "_heliButton", "_planeButton", "_boatButton", "_subButton"];
+//private ["_vehshopDialog", "_Dialog", "_playerMoney", "_owner", "_landButton", "_armorButton", "_tankButton", "_heliButton", "_planeButton", "_boatButton", "_subButton"];
+private ["_vehshopDialog", "_Dialog", "_playerMoney", "_owner", "_landButton", "_lightInfButton", "_armorButton", "_antiButton", "_tankButton", "_boatButton", "_utilityButton"];
+
 _vehshopDialog = createDialog "vehshopd";
 
 _Dialog = findDisplay vehshop_DIALOG;
 _playerMoney = _Dialog displayCtrl vehshop_money;
+
 _landButton = _Dialog displayCtrl vehshop_button0;
-_armorButton = _Dialog displayCtrl vehshop_button1;
-_tankButton = _Dialog displayCtrl vehshop_button2;
-_heliButton = _Dialog displayCtrl vehshop_button3;
-_planeButton = _Dialog displayCtrl vehshop_button4;
+_lightInfButton = _Dialog displayCtrl vehshop_button1;
+_armorButton = _Dialog displayCtrl vehshop_button2;
+_antiButton = _Dialog displayCtrl vehshop_button3;
+_tankButton = _Dialog displayCtrl vehshop_button4;
+//_heliButton = _Dialog displayCtrl vehshop_button5;
+//_planeButton = _Dialog displayCtrl vehshop_button6;
 _boatButton = _Dialog displayCtrl vehshop_button5;
-//_subButton = _Dialog displayCtrl vehshop_button6;
+_utilityButton = _Dialog displayCtrl vehshop_button6;
+
 _playerMoney ctrlSetText format["Cash: $%1", [player getVariable ["cmoney", 0]] call fn_numbersText];
 if (!isNil "_this") then { _owner = _this select 0 };
 if (!isNil "_owner") then
@@ -43,34 +49,34 @@ if (!isNil "_owner") then
 				{
 					vehicleStore_noBuzzard = true;
 				};
-				case "land":
+				case "civilian":
 				{
 					_landButton ctrlEnable false;
+				};
+				case "lightinf":
+				{
+					_lightInfButton ctrlEnable false;
 				};
 				case "armored":
 				{
 					_armorButton ctrlEnable false;
 				};
+				case "anti":
+				{
+					_antiButton ctrlEnable false;
+				};
 				case "tanks":
 				{
 					_tankButton ctrlEnable false;
 				};
-				case "helicopters":
-				{
-					_heliButton ctrlEnable false;
-				};
-				case "planes":
-				{
-					_planeButton ctrlEnable false;
-				};
-				/*case "boats":
+				case "boats":
 				{
 					_boatButton ctrlEnable false;
 				};
-				/*case "submarines":
+				case "utility":
 				{
-					_subButton	ctrlShow false;
-				};*/
+					_utilityButton	ctrlShow false;
+				};
 			};
 		} forEach (_x select 3);
 	};

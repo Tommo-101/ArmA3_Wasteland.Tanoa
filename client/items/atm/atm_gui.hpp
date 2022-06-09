@@ -11,7 +11,7 @@ class AtmGUI
 	idd = AtmGUI_IDD;
 	movingEnable = true;
 	enableSimulation = true;
-	controls[] = {AtmBalanceHead, AtmBalanceText, AtmAmountLabel, AtmAmountInput, AtmAccountLabel, AtmAccountDropdown, AtmFeeLabel, AtmFeeText, AtmTotalLabel, AtmTotalText, AtmDepositButton, AtmWithdrawButton, AtmCancelButton};
+	controls[] = {AtmBalanceHead, AtmBalanceText, AtmAmountLabel, AtmAmountInput, AtmBountyCheckbox, AtmBountyLabel, AtmAccountLabel, AtmAccountDropdown, AtmFeeLabel, AtmFeeText, AtmTotalLabel, AtmTotalText, AtmDepositButton, AtmWithdrawButton, AtmCancelButton, AtmDepositAll};
 	controlsBackground[] = {AtmBG, AtmTopBG, AtmTopLogo, AtmBalanceBG};
 
 
@@ -137,7 +137,18 @@ class AtmGUI
 	#define AtmLabel_H (0.02 * Y_SCALE)
 	#define AtmLabel_X (AtmBG_X + Atm_OUTER_MARGIN_X)
 
-	#define AtmInput_X (AtmLabel_X + + AtmLabel_W + Atm_INNER_MARGIN_X)
+	#define AtmBountyLabel_W (0.06 * X_SCALE)
+	#define AtmBountyLabel_X ((AtmBalanceBG_X + AtmBalanceBG_W) - AtmBountyLabel_W)
+	#define AtmBountyLabel_Y (AtmAmountInput_Y + (AtmLabel_Y_OFFSET/2))
+
+	#define AtmBountyCheckbox_W (0.028 * Y_SCALE)
+	#define AtmBountyCheckbox_H (0.028 * Y_SCALE)
+	#define AtmBountyCheckbox_X ((AtmBountyLabel_X - AtmBountyCheckbox_W) + (0.003 * X_SCALE))
+	#define AtmBountyCheckbox_Y (AtmAmountInput_Y)
+
+	#define AtmInput_X (AtmLabel_X + AtmLabel_W + Atm_INNER_MARGIN_X)
+	#define AtmAmountInput_W ((AtmBountyCheckbox_X - AtmInput_X) - Atm_INNER_MARGIN_X)
+
 	#define AtmInput_W (AtmBG_W - ((AtmInput_X - AtmLabel_X) + (Atm_OUTER_MARGIN_X * 2)))
 	#define AtmInput_H (0.028 * Y_SCALE)
 	#define AtmInput_Y_START (AtmBalanceBG_Y + AtmBalanceBG_H + Atm_OUTER_MARGIN_Y)
@@ -169,10 +180,56 @@ class AtmGUI
 
 		x = AtmInput_X;
 		y = AtmAmountInput_Y;
-		w = AtmInput_W;
+		w = AtmAmountInput_W;
 		h = AtmInput_H;
 	};
 
+	class AtmBountyCheckbox
+	{
+	  idc = AtmBountyCheckbox_IDC;
+		type = 77;
+		style = 0;
+		checked = 0;
+		tooltip = "Place a Bounty on your enemies head.\nThe bounty will be rewarded to the killer of that target.\nThe bounty killer and target are NOT allowed\nto work together or join the same group.";
+		color[] = {1, 1, 1, 0.7};
+		colorFocused[] = {1, 1, 1, 1};
+		colorHover[] = {1, 1, 1, 1};
+		colorPressed[] = {1, 1, 1, 1};
+		colorDisabled[] = {1, 1, 1, 0.2};
+		colorBackground[] = {0, 0, 0, 0};
+		colorBackgroundFocused[] = {0, 0, 0, 0};
+		colorBackgroundHover[] = {0, 0, 0, 0};
+		colorBackgroundPressed[] = {0, 0, 0, 0};
+		colorBackgroundDisabled[] = {0, 0, 0, 0};
+		textureChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+		textureUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+		textureFocusedChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+		textureFocusedUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+		textureHoverChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+		textureHoverUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+		texturePressedChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+		texturePressedUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+		textureDisabledChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
+		textureDisabledUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
+		soundEnter[] = {1, 1, 1, 1};
+		soundPush[] = {1, 1, 1, 1};
+		soundClick[] = {1, 1, 1, 1};
+		soundEscape[] = {1, 1, 1, 1};
+	  x = AtmBountyCheckbox_X;
+	  y = AtmBountyCheckbox_Y;
+	  w = AtmBountyCheckbox_W;
+	  h = AtmBountyCheckbox_H;
+	};
+
+	class AtmBountyLabel : AtmLabelText
+	{
+		idc = AtmBountyLabel_IDC;
+		text = "Bounty";
+	  x = AtmBountyLabel_X;
+	  y = AtmBountyLabel_Y;
+	  w = AtmBountyLabel_W;
+	  h = AtmLabel_H;
+	};
 
 	#define AtmAccountDropdown_Y (AtmAmountInput_Y + AtmInput_Y_MARGIN)
 
@@ -202,12 +259,11 @@ class AtmGUI
 		h = AtmInput_H;
 	};
 
-
 	#define AtmFeeText_Y (AtmAccountDropdown_Y + AtmInput_Y_MARGIN)
 
 	class AtmFeeLabel : AtmLabelText
 	{
-		idc = -1;
+		idc = AtmFeeLabel_IDC;
 		text = "Fee:";
 
 		#define AtmFeeLabel_Y (AtmFeeText_Y + AtmLabel_Y_OFFSET)
@@ -235,7 +291,7 @@ class AtmGUI
 
 	class AtmTotalLabel : AtmLabelText
 	{
-		idc = -1;
+		idc = AtmTotalLabel_IDC;
 		text = "Total:";
 
 		#define AtmTotalLabel_Y (AtmTotalText_Y + AtmLabel_Y_OFFSET)
@@ -259,7 +315,7 @@ class AtmGUI
 	};
 
 
-	#define AtmButton_W ((AtmBG_W - ((Atm_OUTER_MARGIN_X * 2) + (Atm_INNER_MARGIN_X * 2))) / 3)
+	#define AtmButton_W ((AtmBG_W - ((Atm_OUTER_MARGIN_X * 8) + (Atm_INNER_MARGIN_X * 8))) / 3)
 	#define AtmButton_H (0.033 * Y_SCALE)
 	#define AtmButton_Y ((AtmBG_Y + AtmBG_H) - (Atm_OUTER_MARGIN_Y + AtmButton_H))
 
@@ -290,13 +346,24 @@ class AtmGUI
 		x = AtmDepositButton_X;
 	};
 
+	class AtmDepositAll : AtmGreenButton
+	{
+		idc = AtmDepositAll;
+		text = "Deposit All";
+		action = "call mf_items_atm_depositall";
+
+		#define AtmDepositAll_X (AtmDepositButton_X + AtmButton_W + Atm_INNER_MARGIN_X)
+
+		x = AtmDepositAll_X;
+	}
+
 	class AtmWithdrawButton : AtmGreenButton
 	{
 		idc = AtmWithdrawButton_IDC;
 		text = "Withdraw";
 		action = "call mf_items_atm_withdraw";
 
-		#define AtmWithdrawButton_X (AtmDepositButton_X + AtmButton_W + Atm_INNER_MARGIN_X)
+		#define AtmWithdrawButton_X (AtmDepositAll_X + AtmButton_W + Atm_INNER_MARGIN_X)
 
 		x = AtmWithdrawButton_X;
 	};

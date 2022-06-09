@@ -25,6 +25,9 @@ groupManagmentActive = false;
 pvar_PlayerTeamKiller = [];
 doCancelAction = false;
 
+//AJ Beacondetector
+BeaconScanInProgress = false;
+
 //Initialization Variables
 playerCompiledScripts = false;
 playerSetupComplete = false;
@@ -54,6 +57,7 @@ player addEventHandler ["Respawn", { _this spawn onRespawn }];
 player addEventHandler ["Killed", onKilled];
 
 call compile preprocessFileLineNumbers "addons\far_revive\FAR_revive_init.sqf";
+
 
 A3W_scriptThreads pushBack execVM "client\functions\evalManagedActions.sqf";
 
@@ -149,6 +153,8 @@ if (["A3W_survivalSystem"] call isConfigOn) then
 
 	[] execVM "client\functions\createGeneralStoreMarkers.sqf";
 	[] execVM "client\functions\createVehicleStoreMarkers.sqf";
+	[] execVM "client\functions\createAirStoreMarkers.sqf";
+	[] execVM "client\functions\createSpecStoreMarkers.sqf";
 	[] execVM "client\functions\createLegendMarkers.sqf";
 };
 
@@ -161,6 +167,7 @@ A3W_scriptThreads pushBack execVM "addons\Lootspawner\LSclientScan.sqf";
 [] execVM "client\functions\drawPlayerIcons.sqf";
 [] execVM "addons\camera\functions.sqf";
 [] execVM "addons\UAV_Control\functions.sqf";
+[] execVM "addons\cctv\functions.sqf";             // CCTV Camera addon
 
 call compile preprocessFileLineNumbers "client\functions\generateAtmArray.sqf";
 [] execVM "client\functions\drawPlayerMarkers.sqf";
@@ -177,3 +184,5 @@ inGameUISetEventHandler ["Action", "_this call A3W_fnc_inGameUIActionEvent"];
 		_x setVariable ["side", playerSide, true];
 	};
 } forEach pvar_spawn_beacons;
+
+if(hasInterface) then{[] execVM "addons\statusBar\statusbar.sqf"};

@@ -237,3 +237,32 @@ if (playerSide in [BLUFOR,OPFOR] && {{_x select 0 == _uid} count pvar_teamSwitch
 
 	titleText [format ["You have been locked to %1", _side], "PLAIN", 0.5];
 };
+
+player addEventHandler ["HandleHeal", {
+	_this spawn {
+		params ["_injured", "_healer"];
+		if !(_injured == _healer) then
+		{
+			[format ["Stay close, your are treating by %1", name _healer], 5] call mf_notify_client;
+		};
+		_oldFAK = count (items _healer select {_x == "FirstAidKit"});
+		_findAnimation = ["_medicother", "_medic"] select (_injured == _healer);
+		waitUntil {count (animationState _healer) == (24 + count _findAnimation) && (animationState _healer) find [_findAnimation, 24] == 24}; // start healing animation
+		_healAnimation = animationState _healer;
+		waitUntil {animationState _healer != _healAnimation}; // end healing animation
+		if (_healer distance _injured < 2.5 && vehicle _injured == _injured) then // heal success
+		{
+			_isMedic = ["_medic_", typeOf _healer] call fn_findString != -1;
+			_haveMedkit = count (items _healer select {_x == "Medikit"}) > 0;
+			if ((_isMedic && !_haveMedkit) || !_isMedic) then
+			{
+				_newFAK = count (items _healer select {_x == "FirstAidKit"});
+				if (_oldFAK == _newFAK) then // custom treat by script
+				{
+					_injured removeItem "FirstAidKit";
+				};
+			};
+			_injured setDamage 0;
+		};
+	};
+}];

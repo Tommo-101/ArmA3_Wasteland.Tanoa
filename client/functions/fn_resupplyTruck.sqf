@@ -4,11 +4,11 @@
 //  @file Name: fn_resupplyTruck.sqf
 //  @file Author: Wiking, AgentRev, micovery
 
-#define RESUPPLY_TRUCK_DISTANCE (10 max (sizeOf typeOf _vehicle * 0.75)) // this must match the addAction condition in fn_setupResupplyTruck.sqf
+#define RESUPPLY_TRUCK_DISTANCE (10 max (sizeOf typeOf _vehicle * 2)) // this must match the addAction condition in fn_setupResupplyTruck.sqf
 #define REARM_TIME_SLICE 5
 #define REPAIR_TIME_SLICE 1
 #define REFUEL_TIME_SLICE 1
-#define PRICE_RELATIONSHIP 4 // resupply price = brand-new store price divided by PRICE_RELATIONSHIP
+#define PRICE_RELATIONSHIP 8 // resupply price = brand-new store price divided by PRICE_RELATIONSHIP
 #define RESUPPLY_TIMEOUT 30
 
 // Check if mutex lock is active.
@@ -38,7 +38,7 @@ _resupplyThread = [_vehicle, _unit] spawn
 
 	scopeName "resupplyTruckThread";
 
-	_price = 1000; // price = 1000 for vehicles not found in vehicle store
+	_price = 5000; // price = 1000 for vehicles not found in vehicle store
 
 	_variant = _vehicle getVariable ["A3W_vehicleVariant", ""];
 	if (_variant != "") then { _variant = "variant_" + _variant };
@@ -49,7 +49,7 @@ _resupplyThread = [_vehicle, _unit] spawn
 			_price = _x select 2;
 			_price = round (_price / PRICE_RELATIONSHIP);
 		};
-	} forEach (call allVehStoreVehicles + call staticGunsArray);
+	} forEach (call allVehStoreVehicles + call specOpsStore + call allAirStoreVehicles + call staticGunsArray);
 
 	_titleText =
 	{

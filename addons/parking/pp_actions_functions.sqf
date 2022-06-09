@@ -79,6 +79,9 @@ pp_create_terminal = {
 
   private _offset = switch (true) do {
     case (_garage isKindOf "Land_Carrier_01_base_F"): { [-28.663,108.289,23.9749] };
+    case (_garage isKindOf "Land_Hangar_F"): { [10.6934,-19.0488,0] };
+    case (_garage isKindOf "Land_ServiceHangar_01_R_F"): { [16.1, -13.4, 0] };
+    case (_garage isKindOf "Land_Airport_01_hangar_F"): { [10.668,-7.77734,0] };
     default                                           { [0,0,0] };
   };
 
@@ -92,6 +95,7 @@ pp_create_terminal = {
   _terminal setVectorDirAndUp [vectorDir _garage, vectorUp _garage];
   //_terminal attachTo [_garage, [0,0,0]];
   _terminal setVariable ["is_parking", true, true];
+  if !(_offset isEqualTo [0,0,0]) then { _terminal setVariable ["is_hangar", true, true] };
   [_terminal, _garage] call pp_setup_terminal;
 
   (_pos)
@@ -116,7 +120,7 @@ pp_create_terminals = {
     _marker_pos = markerPos _marker;
     //if (isARRAY(pp_cities_whitelist) && {count(pp_cities_whitelist) > 0 && {not(_town_name in pp_cities_whitelist)}}) exitWith {};
 
-    _garage = (nearestObjects [_marker_pos, ["Land_i_Shed_Ind_F", "Land_Carrier_01_base_F"], 50]) select 0;
+    _garage = (nearestObjects [_marker_pos, ["Land_i_Shed_Ind_F", "Land_Carrier_01_base_F", "Land_Hangar_F", "Land_ServiceHangar_01_R_F", "Land_Airport_01_hangar_F"], 50]) select 0;
     if (!isOBJECT(_garage)) exitWith {
       diag_log format["No garage near %1", _marker];
     };
@@ -133,9 +137,14 @@ pp_create_terminals = {
 
 pp_get_near_vehicles = {
   ARGVX4(0,_player,objNull,[]);
-
+  init(_supportVehicle,[]);
+  _supportVehicle pushBack "Plane";
+  if (count (allMapMarkers select {_x select [0,7] == "Parking" && {_x select [count _x - 12, 6] == "_plane" && {_x select [count _x - 6, 6] == "_spawn" && _player distance markerPos _x < 100}}}) == 0) then
+  {
+    _supportVehicle append ["Helicopter","LandVehicle","Ship"];
+  };
   def(_vehicles);
-  _vehicles = (nearestObjects [_player, ["LandVehicle","Air","Ship"], 50]) select {!(_x getVariable ["A3W_lockpickDisabled",false])};
+  _vehicles = (nearestObjects [_player, _supportVehicle, 50]) select {!(_x getVariable ["A3W_lockpickDisabled",false]) && {!(_x getVariable ["Mission_Vehicle", false])}};
 
   init(_filtered,[]);
   def(_uid);
@@ -271,13 +280,14 @@ pp_park_allowed = {
 
 
 pp_park_vehicle_action = {
+  ARGVX4(3,_titleName,"", nil);
   init(_player,player);
 
   def(_vehicles);
   _vehicles = [_player] call pp_get_near_vehicles;
 
   def(_vehicle_id);
-  _vehicle_id = ["Park Vehicle", _vehicles] call pp_interact_park_vehicle_wait;
+  _vehicle_id = [_titleName, _vehicles] call pp_interact_park_vehicle_wait;
 
   if (!isSTRING(_vehicle_id)) exitWith {
     //_player groupChat format["%1, you did not select any vehicle to park", (name _player)];
@@ -300,15 +310,30 @@ pp_park_vehicle_action = {
 };
 
 pp_retrieve_vehicle_action = {
+  ARGVX4(3,_titleName,"", nil);
   init(_player,player);
 
   def(_parked_vehicles);
   _parked_vehicles = _player getVariable "parked_vehicles";
   _parked_vehicles = if (isARRAY(_parked_vehicles)) then {_parked_vehicles} else {[]};
 
+  if (count (allMapMarkers select {_x select [0,7] == "Parking" && {_x select [count _x - 12, 6] == "_plane" && {_x select [count _x - 6, 6] == "_spawn" && _player distance markerPos _x < 100}}}) != 0) then
+  {
+    init(_temp_parkedVehicles,[]);
+    {
+      if ((_x select 1 select 0 select 1) isKindOf "Plane") then
+      {
+        if (!((_x select 1 select 0 select 1) isKindOf "VTOL_01_base_F")) then
+        {
+          _temp_parkedVehicles pushBack _x;
+        };
+      };
+    } forEach _parked_vehicles;
+    _parked_vehicles = _temp_parkedVehicles;
+  };
 
   def(_vehicle_id);
-  _vehicle_id = ["Retrieve Vehicle", _parked_vehicles] call pp_interact_park_vehicle_wait;
+  _vehicle_id = [_titleName, _parked_vehicles] call pp_interact_park_vehicle_wait;
 
 
   if (!isSTRING(_vehicle_id)) exitWith {
@@ -342,19 +367,18 @@ pp_is_object_parking = {
 };
 
 pp_is_player_near = {
-  private["_objects"];
+  private["_objects", "_found"];
   _objects = nearestObjects [player, ["Land_CampingTable_small_F"], 2];
   if (isNil "_objects") exitWith {false};
 
-  private["_found"];
-  _found = false;
+  _found = objNull;
   {
     if ([_x] call pp_is_object_parking) exitWith {
-      _found = true;
+      _found = _x;
     };
   } forEach _objects ;
 
-  (_found)
+  _found // let return object if found
 };
 
 pp_actions = OR(pp_actions,[]);
@@ -372,26 +396,29 @@ pp_remove_actions = {
 
 pp_add_actions = {
   if (count pp_actions > 0) exitWith {};
-  private["_player"];
+  private["_player", "_terminal", "_actionNames"];
   _player = _this select 0;
-
+  _terminal = _this select 1;
+  _actionNames = ["Park Vehicle", "Retrieve Vehicle"];
+  if (_terminal getVariable ["is_hangar", false]) then
+  {
+    _actionNames = ["Park Plane", "Retrieve Plane"];
+  };
   private["_action_id", "_text"];
-  _action_id = _player addAction ["<img image='addons\parking\icons\parking.paa'/> Park Vehicle", {call pp_park_vehicle_action}];
+  _action_id = _player addAction [format["<img image='addons\parking\icons\parking.paa'/> %1", _actionNames select 0], {call pp_park_vehicle_action}, _actionNames select 0];
   pp_actions = pp_actions + [_action_id];
 
-  _action_id = _player addAction ["<img image='addons\parking\icons\parking.paa'/> Retrieve Vehicle", {call pp_retrieve_vehicle_action}];
+  _action_id = _player addAction [format["<img image='addons\parking\icons\parking.paa'/> %1", _actionNames select 1], {call pp_retrieve_vehicle_action}, _actionNames select 1];
   pp_actions = pp_actions + [_action_id];
 };
 
 pp_check_actions = {
-    private["_player"];
+    private["_player", "_in_vehicle", "_terminal"];
     _player = player;
-    private["_vehicle", "_in_vehicle"];
-    _vehicle = (vehicle _player);
-    _in_vehicle = (_vehicle != _player);
-
-    if (not(_in_vehicle || {not(alive _player) || {not(call pp_is_player_near)}})) exitWith {
-      [_player] call pp_add_actions;
+    _in_vehicle = (vehicle _player != _player);
+    _terminal = call pp_is_player_near;
+    if (not(_in_vehicle || {not(alive _player) || isNull _terminal})) exitWith {
+      [_player, _terminal] call pp_add_actions;
     };
 
    [_player] call pp_remove_actions;

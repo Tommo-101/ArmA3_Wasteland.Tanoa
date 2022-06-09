@@ -69,7 +69,7 @@ storeSellingHandle = _this spawn
 		{
 			_price = (ceil (((_x select 2) / CHOPSHOP_PRICE_RELATIONSHIP) / 5)) * 5;
 		};
-	} forEach (call allVehStoreVehicles + call staticGunsArray);
+	} forEach (call allVehStoreVehicles + call allAirStoreVehicles + call specOpsStore + call staticGunsArray);
 
 	if (!isNil "_price") then
 	{

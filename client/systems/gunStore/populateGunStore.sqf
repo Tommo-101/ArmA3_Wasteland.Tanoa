@@ -11,7 +11,7 @@
 disableSerialization;
 private ["_switch", "_dialog", "_gunlisttext", "_gunlist", "_ammolist", "_ammoBtn", "_ammoLbl", "_gunDesc", "_showAmmo", "_playerSideNum", "_itemsArray", "_parentCfg", "_weaponClass", "_weapon", "_picture", "_gunlistIndex"];
 _switch = _this select 0;
-
+GunStoreSelected = _switch;
 // Grab access to the controls
 _dialog = findDisplay gunshop_DIALOG;
 _gunlisttext = _dialog displayCtrl gunshop_gun_TEXT;
@@ -61,6 +61,11 @@ switch(_switch) do
 	case 3:
 	{
 		_itemsArray = call lmgArray;
+		_showAmmo = true;
+	};
+	case 4:
+	{
+		_itemsArray = call sniperArray;
 		_showAmmo = true;
 	};
 	case 5:
@@ -116,7 +121,7 @@ if (_wepFilter) then
 			_idx = _wepFilterDropdown lbAdd getText (configFile >> "CfgWeapons" >> _x >> "displayName");
 			_wepFilterDropdown lbSetData [_idx, _x];
 		};
-	} forEach (weapons player arrayIntersect (weapons player - [binocular player]));
+	} forEach [primaryWeapon player, secondaryWeapon player, handgunWeapon player];
 
 	_wepFilterDropdown lbSetCurSel ([_wepFilterSel, 0] select (_wepFilterSel == -1));
 	_wepFilterData = _wepFilterDropdown lbData lbCurSel _wepFilterDropdown;
@@ -147,7 +152,7 @@ _wepFilterItems = if (_wepFilterData != "") then { [_wepFilterData] call BIS_fnc
 
 		_gunlistIndex = _gunlist lbAdd format ["%1", [_x select 0, getText (_weapon >> "displayName")] select (_x select 0 == "")];
 		_gunlist lbSetData [_gunlistIndex, _weaponClass];
-	
+
 		// Show scope on sniper rifle pictures
 		if ([["_SOS_F", "_LRPS_F"], _weaponClass] call fn_findString != -1) then
 		{

@@ -93,18 +93,8 @@ if (!call _checkEnoughMoney) exitWith {};
 _buyButton = _dialog displayCtrl vehshop_BuyButton_IDC;
 _buyButton buttonSetAction format ["[true, '%1'] call repaintVehicle", netId _vehicle];
 
-// copypasted from loadVehicleStore.sqf cause I'm lazy
 private _partList = _Dialog displayCtrl vehshop_part_list;
-//_partList ctrlEnable false;
 _partList ctrlAddEventHandler ["LBSelChanged", compile preprocessFileLineNumbers "client\systems\vehicleStore\partInfo.sqf"];
-
-/*private _defPartsChk = _Dialog displayCtrl vehshop_defparts_checkbox;
-_defPartsChk cbSetChecked true;
-_defPartsChk ctrlAddEventHandler ["CheckedChanged",
-{
-	params ["_defPartsChk", "_checked"];
-	((ctrlParent _defPartsChk) displayCtrl vehshop_part_list) ctrlEnable (_checked < 1);
-}];*/
 
 _dialog spawn
 {

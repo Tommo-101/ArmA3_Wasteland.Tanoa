@@ -66,20 +66,6 @@ class vehshopd
 			w = VehStoreMainBG_W;
 			h = VehStoreTopBar_H;
 		};
-
-		/*
-		class PlayerMoneyText: w_RscText
-		{
-			idc = vehshop_money;
-			text = "Cash:";
-			sizeEx = 0.04 * TEXT_SCALE;
-
-			x = VehStoreMainBG_X + (0.6033 * SZ_SCALE);
-			y = VehStoreMainBG_Y + (0.005 * SZ_SCALE);
-			w = 0.1126 * SZ_SCALE;
-			h = 0.0448 * SZ_SCALE;
-		};
-		*/
 	};
 
 	class Controls
@@ -204,7 +190,7 @@ class vehshopd
 		{
 			idc = vehshop_button0;
 			action = "[0] call populateVehicleStore";
-			text = "Land";
+			text = "Civilian";
 			sizeEx = VehStoreButton_textSize;
 
 			x = VehStoreMainBG_X + (0.0167 * SZ_SCALE);
@@ -217,7 +203,7 @@ class vehshopd
 		{
 			idc = vehshop_button1;
 			action = "[1] call populateVehicleStore";
-			text = "Armored";
+			text = "Light Infantry";
 			sizeEx = VehStoreButton_textSize;
 
 			x = VehStoreMainBG_X + (0.0167 * SZ_SCALE);
@@ -230,7 +216,7 @@ class vehshopd
 		{
 			idc = vehshop_button2;
 			action = "[2] call populateVehicleStore";
-			text = "Tanks";
+			text = "Armored Combat";
 			sizeEx = VehStoreButton_textSize;
 
 			x = VehStoreMainBG_X + (0.0167 * SZ_SCALE);
@@ -243,7 +229,7 @@ class vehshopd
 		{
 			idc = vehshop_button3;
 			action = "[3] call populateVehicleStore";
-			text = "Helicopters";
+			text = "Anti Air/Armour";
 			sizeEx = VehStoreButton_textSize;
 
 			x = VehStoreMainBG_X + (0.0167 * SZ_SCALE);
@@ -256,7 +242,7 @@ class vehshopd
 		{
 			idc = vehshop_button4;
 			action = "[4] call populateVehicleStore";
-			text = "Planes";
+			text = "Battle Tanks";
 			sizeEx = VehStoreButton_textSize;
 
 			x = VehStoreMainBG_X + (0.0167 * SZ_SCALE);
@@ -264,6 +250,32 @@ class vehshopd
 			w = 0.1173 * SZ_SCALE;
 			h = 0.040 * SZ_SCALE;
 		};
+
+		/*class StoreButton5: w_RscButton
+		{
+			idc = vehshop_button5;
+			action = "[5] call populateVehicleStore";
+			text = "Helicopters";
+			sizeEx = VehStoreButton_textSize;
+
+			x = VehStoreMainBG_X + (0.0167 * SZ_SCALE);
+			y = VehStoreMainBG_Y + (0.325 * SZ_SCALE);
+			w = 0.1173 * SZ_SCALE;
+			h = 0.040 * SZ_SCALE;
+		};
+
+		class StoreButton6: w_RscButton
+		{
+			idc = vehshop_button6;
+			action = "[6] call populateVehicleStore";
+			text = "Planes";
+			sizeEx = VehStoreButton_textSize;
+
+			x = VehStoreMainBG_X + (0.0167 * SZ_SCALE);
+			y = VehStoreMainBG_Y + (0.375 * SZ_SCALE);
+			w = 0.1173 * SZ_SCALE;
+			h = 0.040 * SZ_SCALE;
+		};*/
 
 		class StoreButton5: w_RscButton
 		{
@@ -278,13 +290,11 @@ class vehshopd
 			h = 0.040 * SZ_SCALE;
 		};
 
-		// Submarines transferred in Boats
-		/*
 		class StoreButton6: w_RscButton
 		{
 			idc = vehshop_button6;
 			action = "[6] call populateVehicleStore";
-			text = "Submarines";
+			text = "Utility";
 			sizeEx = VehStoreButton_textSize;
 
 			x = VehStoreMainBG_X + (0.0167 * SZ_SCALE);
@@ -292,7 +302,5 @@ class vehshopd
 			w = 0.1173 * SZ_SCALE;
 			h = 0.040 * SZ_SCALE;
 		};
-		*/
 	};
 };
-

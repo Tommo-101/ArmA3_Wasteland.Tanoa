@@ -9,12 +9,14 @@
 #define vehshop_part_list 5389
 #define vehshop_money 5289
 #define vehshop_button0 5290 // Land
-#define vehshop_button1 5291 // Armored
-#define vehshop_button2 5292 // Tanks
-#define vehshop_button3 5293 // Helis
-#define vehshop_button4 5294 // Planes
-#define vehshop_button5 5295 // Boats
-#define vehshop_button6 5296 // Submarines (unused)
+#define vehshop_button1 5291 // lightInfArray
+#define vehshop_button2 5292 // Armored
+#define vehshop_button3 5293 // antiArray
+#define vehshop_button4 5294 // Tanks
+#define vehshop_button5 5295 // Helis
+#define vehshop_button6 5296 // Planes
+#define vehshop_button7 5297 // Boats
+#define vehshop_button8 5298 // utilityArray
 #define vehshop_BuyButton_IDC 100
 
 #define A3W_vehPaintIDD 5785
